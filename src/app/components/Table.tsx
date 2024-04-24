@@ -3,6 +3,7 @@ import React, { forwardRef, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { IUser, postProduct, updateProduct } from "../utils/userApi";
 import { MdEdit } from "react-icons/md";
+import Spinner from "./Spinner";
 
 const Table = forwardRef<
   HTMLDivElement,
@@ -20,6 +21,8 @@ const Table = forwardRef<
 
   const [showNewRow, setShowNewRow] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   const [openEdit, setOpenEdit] = useState({
     productId: "",
     open: false,
@@ -28,11 +31,12 @@ const Table = forwardRef<
       productName: "",
       color: "",
       category: "",
-      price: ""
+      price: "",
     },
   });
   const handlePostProduct = async () => {
     try {
+      setLoading(true);
       if (!props.user) return;
       const postData = await postProduct({
         email: props.user.email,
@@ -43,13 +47,18 @@ const Table = forwardRef<
       });
       props.setUser(postData);
       setShowNewRow(!showNewRow);
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
+
       console.log(err);
     }
   };
 
   const handleUpdateProduct = async () => {
     try {
+      setLoading(true);
+
       if (!props.user) return;
       const postData = await updateProduct({
         email: props.user.email,
@@ -60,8 +69,15 @@ const Table = forwardRef<
         productId: openEdit.productId,
       });
       props.setUser(postData);
-      setOpenEdit((prev) => ({ open: false, productId: "", product:prev.product }));
+      setOpenEdit((prev) => ({
+        open: false,
+        productId: "",
+        product: prev.product,
+      }));
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
+
       console.log(err);
     }
   };
@@ -69,8 +85,10 @@ const Table = forwardRef<
   return (
     <div className="relative overflow-x-auto" ref={ref}>
       <div className="flex justify-center items-center">
-      <p className="text-[#00df9a]">create product Api Hit {props.user?.addProductCount}...  ❤️  And update product Api count {props.user?.updateProductCount}</p>
-
+        <p className="text-[#00df9a]">
+          create product Api Hit {props.user?.addProductCount}... ❤️ And update
+          product Api count {props.user?.updateProductCount}
+        </p>
       </div>
 
       <table className="w-full text-sm text-left  text-gray-500 dark:text-gray-400">
@@ -109,11 +127,13 @@ const Table = forwardRef<
                   <input
                     placeholder="name"
                     value={openEdit.product.productName}
-                    onChange={(e)=>setOpenEdit(prev=>{
-                      let temp = {...prev};
-                      temp.product.productName = e.target.value
-                      return temp;
-                    })}
+                    onChange={(e) =>
+                      setOpenEdit((prev) => {
+                        let temp = { ...prev };
+                        temp.product.productName = e.target.value;
+                        return temp;
+                      })
+                    }
                     className="text-black"
                   />
                 )}
@@ -126,11 +146,13 @@ const Table = forwardRef<
                     placeholder="name"
                     value={openEdit.product.color}
                     className="text-black"
-                    onChange={(e)=>setOpenEdit(prev=>{
-                      let temp = {...prev};
-                      temp.product.color = e.target.value
-                      return temp;
-                    })}
+                    onChange={(e) =>
+                      setOpenEdit((prev) => {
+                        let temp = { ...prev };
+                        temp.product.color = e.target.value;
+                        return temp;
+                      })
+                    }
                   />
                 )}
               </td>
@@ -142,11 +164,13 @@ const Table = forwardRef<
                     placeholder="name"
                     value={openEdit.product.category}
                     className="text-black"
-                    onChange={(e)=>setOpenEdit(prev=>{
-                      let temp = {...prev};
-                      temp.product.category = e.target.value
-                      return temp;
-                    })}
+                    onChange={(e) =>
+                      setOpenEdit((prev) => {
+                        let temp = { ...prev };
+                        temp.product.category = e.target.value;
+                        return temp;
+                      })
+                    }
                   />
                 )}
               </td>
@@ -158,11 +182,13 @@ const Table = forwardRef<
                     placeholder="name"
                     value={openEdit.product.price}
                     className="text-black"
-                    onChange={(e)=>setOpenEdit(prev=>{
-                      let temp = {...prev};
-                      temp.product.price = e.target.value
-                      return temp;
-                    })}
+                    onChange={(e) =>
+                      setOpenEdit((prev) => {
+                        let temp = { ...prev };
+                        temp.product.price = e.target.value;
+                        return temp;
+                      })
+                    }
                   />
                 )}
               </td>
@@ -173,12 +199,14 @@ const Table = forwardRef<
                       setOpenEdit((prev) => ({
                         open: true,
                         productId: product._id,
-                        product:product
+                        product: product,
                       }));
                     }}
                   />
                 ) : (
-                  <p onClick={handleUpdateProduct}>submit</p>
+                  <button onClick={handleUpdateProduct} disabled={loading}>
+                    {loading ? "Loading..." : "submit"}
+                  </button>
                 )}
               </td>
             </tr>
@@ -250,12 +278,15 @@ const Table = forwardRef<
         </tbody>
       </table>
       {showNewRow ? (
-        <div
+        <button
           className="text-2xl text-white w-full flex justify-center cursor-pointer text-center "
           onClick={handlePostProduct}
+          disabled={loading}
         >
-          <p className="rounded-md bg-[#00df9a] px-2 py-2">Submit</p>
-        </div>
+          <p className="rounded-md bg-[#00df9a] px-2 py-2">
+            {loading ? "Loading.." : "submit"}
+          </p>
+        </button>
       ) : (
         <div
           className="text-2xl text-white w-full flex justify-center cursor-pointer text-center"

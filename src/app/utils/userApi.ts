@@ -2,7 +2,9 @@ import axios from "axios";
 
 // Create an Axios instance with base URL
 const api = axios.create({
-  baseURL: "http://localhost:4000", // Replace with your server URL
+  // baseURL: "http://localhost:4000", // Replace with your server URL
+  baseURL: "https://data-neuron-backend-3pwc.onrender.com", // Replace with your server URL
+
 });
 
 // Define routes
