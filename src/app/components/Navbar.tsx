@@ -19,9 +19,9 @@ const Navbar = () => {
         <li className="p-4">Contact</li>
       </ul>
       <div className="flex justify-center items-center md:hidden" onClick={handleNav}>
-        {nav?<AiOutlineMenu size={20} />:<AiOutlineClose size={20} />}
+        {!nav?<AiOutlineMenu size={20} />:<AiOutlineClose size={20} />}
       </div>
-      <div className={!nav?"fixed left-0 top-0 w-[60%] border-r border-r-gray-900 h-full bg-[#000300] ease-in-out duration-500 md:left-[-100%]":"fixed left-[-100%]"}>
+      <div className={nav?"fixed left-0 top-0 w-[60%] border-r border-r-gray-900 h-full bg-[#000300] ease-in-out duration-500 md:left-[-100%]":"fixed left-[-100%]"}>
         <h1 className="w-full text-3xl font-bold text-[#00df9a] m-4">
           Sameer Vashisth
         </h1>
